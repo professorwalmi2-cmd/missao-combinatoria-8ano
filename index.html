@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Missão Combinatória | 8º ano</title>
+<style>
+  :root{
+    --bg:#08111f; --panel:#101c31; --panel2:#16243d; --text:#eef5ff;
+    --muted:#a8b8ce; --ok:#4ade80; --bad:#fb7185; --accent:#60a5fa; --gold:#fbbf24;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;background:
+    radial-gradient(circle at 20% 0%,#18365c 0,transparent 30%),
+    radial-gradient(circle at 80% 20%,#2d1a4a 0,transparent 28%),var(--bg);color:var(--text)}
+  body{overflow-x:hidden}
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:
+    radial-gradient(#ffffff66 1px,transparent 1px);background-size:24px 24px;animation:drift 40s linear infinite}
+  @keyframes drift{to{background-position:240px 120px}}
+  .wrap{width:min(1120px,94vw);margin:auto;position:relative;z-index:1;padding:22px 0 50px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+  .brand{font-weight:900;letter-spacing:.3px;font-size:clamp(20px,3vw,32px)}
+  .brand span{color:var(--gold)}
+  .teacher{color:var(--muted);font-size:14px;text-align:right}
+  .screen{display:none;animation:fade .35s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .hero{background:linear-gradient(145deg,#12233d,#0d182a);border:1px solid #ffffff1a;border-radius:24px;padding:28px;box-shadow:0 22px 70px #0008}
+  h1,h2,h3{margin-top:0}
+  .hero h1{font-size:clamp(34px,6vw,68px);line-height:.96;margin-bottom:14px}
+  .hero p{color:var(--muted);font-size:clamp(16px,2vw,20px);max-width:850px}
+  .badge{display:inline-block;padding:7px 11px;border:1px solid #ffffff22;border-radius:999px;background:#ffffff0b;color:#dbeafe;font-size:13px}
+  .chooser{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  .mission-card{position:relative;overflow:hidden;border:1px solid #ffffff1a;border-radius:20px;background:linear-gradient(160deg,#13253f,#0f1a2c);padding:20px;min-height:250px;cursor:pointer;transition:.25s}
+  .mission-card:hover{transform:translateY(-5px) scale(1.01);border-color:#ffffff44}
+  .mission-card .emoji{font-size:58px;display:inline-block;animation:float 3s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-10px) rotate(3deg)}}
+  .mission-card h3{font-size:24px;margin:9px 0}
+  .mission-card p{color:var(--muted);line-height:1.4}
+  .mission-card button,.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;background:var(--accent);color:#06101d;transition:.2s}
+  .btn:hover,.mission-card button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .btn.secondary{background:#ffffff14;color:var(--text);border:1px solid #ffffff22}
+  .btn.gold{background:var(--gold);color:#241800}
+  .random{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .note{margin-top:16px;color:var(--muted);font-size:14px}
+  .game-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:14px}
+  .progressbox{background:#ffffff0d;border:1px solid #ffffff16;border-radius:16px;padding:12px}
+  .progressbar{height:12px;background:#ffffff12;border-radius:99px;overflow:hidden}
+  .progressfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:.35s}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px;margin-top:7px}
+  .scene{min-height:540px;display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+  .story,.challenge{border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(155deg,#10203a,#0c1728);padding:24px;box-shadow:0 18px 55px #0006}
+  .story{position:relative;overflow:hidden}
+  .story .scene-emoji{font-size:110px;text-align:center;margin:28px 0 10px;filter:drop-shadow(0 16px 18px #0008);animation:bob 2.7s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-12px) scale(1.03)}}
+  .story p{color:#c7d5e8;line-height:1.55}
+  .speech{margin-top:18px;padding:15px;border-radius:16px;background:#ffffff0b;border:1px solid #ffffff12}
+  .challenge h2{font-size:27px}
+  .challenge p{font-size:18px;line-height:1.45;color:#dbe8f8}
+  .options{display:grid;gap:10px;margin:18px 0}
+  .option{padding:13px;border-radius:13px;border:1px solid #ffffff20;background:#ffffff0b;color:var(--text);font-weight:700;text-align:left;cursor:pointer;transition:.18s}
+  .option:hover{background:#ffffff14;transform:translateX(3px)}
+  .option.correct{border-color:var(--ok);background:#4ade8020}
+  .option.wrong{border-color:var(--bad);background:#fb718520}
+  .inputrow{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+  input[type="number"],input[type="text"]{flex:1;min-width:180px;background:#07111f;color:white;border:1px solid #ffffff2a;padding:13px;border-radius:12px;font-size:18px}
+  .feedback{min-height:58px;padding:12px 14px;border-radius:14px;background:#ffffff08;color:#dbeafe;margin-top:10px}
+  .feedback.ok{border:1px solid #4ade8066}
+  .feedback.bad{border:1px solid #fb718566}
+  .formula{background:#020817aa;border:1px solid #ffffff14;padding:12px 14px;border-radius:14px;font-family:Consolas,monospace;color:#fef3c7;margin-top:12px}
+  .navrow{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+  .hidden{display:none!important}
+  .finish{text-align:center;background:linear-gradient(150deg,#13233c,#0c1728);border:1px solid #ffffff1c;border-radius:24px;padding:34px;box-shadow:0 20px 70px #0007}
+  .trophy{font-size:110px;animation:trophy 1.6s ease-in-out infinite}
+  @keyframes trophy{50%{transform:rotate(-5deg) scale(1.08)}}
+  .code{display:inline-block;font-size:clamp(24px,6vw,48px);font-weight:900;letter-spacing:3px;background:#050b14;border:2px dashed var(--gold);padding:14px 20px;border-radius:16px;color:var(--gold);margin:10px 0}
+  .confetti{position:fixed;top:-15px;width:10px;height:18px;z-index:30;animation:fall 2.5s linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
+  .footer{text-align:center;color:#71839b;font-size:12px;margin-top:24px}
+  @media(max-width:800px){
+    .chooser,.scene{grid-template-columns:1fr}
+    .scene{min-height:unset}
+    .teacher{display:none}
+    .story .scene-emoji{font-size:80px}
+  }
+
+  /* Guia animado */
+  .guide-zone{
+    display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;
+    margin:14px 0 18px;padding:14px;border-radius:18px;
+    background:linear-gradient(135deg,#ffffff0b,#ffffff05);border:1px solid #ffffff16;
+  }
+  .guide-stage{display:flex;justify-content:center;align-items:center;min-height:170px}
+  .guide-character{position:relative;width:118px;height:150px;animation:guideIdle 2.4s ease-in-out infinite;transform-origin:50% 100%}
+  .guide-shadow{position:absolute;left:18px;bottom:0;width:82px;height:15px;border-radius:50%;background:#0007;filter:blur(2px);animation:shadowPulse 2.4s ease-in-out infinite}
+  .guide-body{position:absolute;left:31px;bottom:17px;width:58px;height:63px;border-radius:26px 26px 18px 18px;background:linear-gradient(180deg,#5eead4,#2563eb);border:3px solid #dff9ff;box-shadow:inset 0 -7px 0 #0002}
+  .guide-chest{position:absolute;left:17px;top:18px;width:24px;height:24px;border-radius:50%;background:#0b1326;border:2px solid #e0fbff;display:grid;place-items:center;color:#fbbf24;font-size:12px;font-weight:900}
+  .guide-arm{position:absolute;top:15px;width:18px;height:54px;border-radius:12px;background:linear-gradient(180deg,#60a5fa,#1d4ed8);border:3px solid #dff9ff;transform-origin:50% 8px}
+  .guide-arm.left{left:-9px;transform:rotate(13deg)}
+  .guide-arm.right{right:-9px;transform:rotate(-13deg)}
+  .guide-head{position:absolute;left:18px;top:8px;width:84px;height:76px;border-radius:44% 44% 48% 48%;background:linear-gradient(180deg,#d8fff8,#8ee8df);border:3px solid #efffff;box-shadow:inset 0 -8px 0 #3b82f622}
+  .guide-ear{position:absolute;top:27px;width:26px;height:18px;background:#8ee8df;border:3px solid #efffff;z-index:-1}
+  .guide-ear.left{left:-17px;clip-path:polygon(100% 0,0 50%,100% 100%);transform:rotate(3deg)}
+  .guide-ear.right{right:-17px;clip-path:polygon(0 0,100% 50%,0 100%);transform:rotate(-3deg)}
+  .guide-hair{position:absolute;left:14px;top:-9px;width:58px;height:26px;background:linear-gradient(150deg,#172554,#7c3aed);border-radius:70% 20% 60% 20%;transform:rotate(-8deg)}
+  .guide-eye{position:absolute;top:30px;width:10px;height:14px;border-radius:50%;background:#07111f;transition:.18s}
+  .guide-eye.left{left:22px}.guide-eye.right{right:22px}
+  .guide-eye::after{content:"";position:absolute;width:3px;height:3px;border-radius:50%;background:white;left:2px;top:2px}
+  .guide-brow{position:absolute;top:22px;width:18px;height:4px;border-radius:10px;background:#172554;transition:.18s}
+  .guide-brow.left{left:17px;transform:rotate(7deg)} .guide-brow.right{right:17px;transform:rotate(-7deg)}
+  .guide-mouth{position:absolute;left:30px;top:53px;width:24px;height:10px;border-bottom:4px solid #172554;border-radius:0 0 20px 20px;transition:.18s}
+  .guide-orb{position:absolute;right:-3px;top:3px;width:28px;height:28px;border-radius:50%;background:#fbbf24;border:3px solid #fff7d6;box-shadow:0 0 18px #fbbf2488;animation:orb 2.2s ease-in-out infinite}
+  .guide-copy h4{margin:0 0 7px;font-size:18px}
+  .guide-copy p{margin:0;color:#c7d5e8;line-height:1.45}
+  .guide-name{color:#fbbf24;font-weight:900}
+  .guide-mood{font-size:12px;color:#93c5fd;margin-top:7px;min-height:18px}
+  @keyframes guideIdle{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+  @keyframes shadowPulse{0%,100%{transform:scaleX(1);opacity:.6}50%{transform:scaleX(.82);opacity:.35}}
+  @keyframes orb{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .guide-character.happy{animation:guideHappy .65s ease-in-out 2}
+  .guide-character.happy .guide-arm.left{animation:waveLeft .45s ease-in-out 3}
+  .guide-character.happy .guide-arm.right{animation:waveRight .45s ease-in-out 3}
+  .guide-character.happy .guide-eye{height:8px;top:33px;border-radius:0 0 50% 50%;background:transparent;border-bottom:4px solid #07111f}
+  .guide-character.happy .guide-eye::after{display:none}
+  .guide-character.happy .guide-mouth{top:50px;height:18px;border:0;background:#172554;border-radius:4px 4px 18px 18px}
+  .guide-character.happy .guide-mouth::after{content:"";position:absolute;left:6px;bottom:3px;width:12px;height:5px;border-radius:50%;background:#fb7185}
+  @keyframes guideHappy{0%,100%{transform:translateY(0) scale(1)}35%{transform:translateY(-16px) scale(1.05) rotate(-4deg)}70%{transform:translateY(-9px) scale(1.03) rotate(4deg)}}
+  @keyframes waveLeft{0%,100%{transform:rotate(13deg)}50%{transform:rotate(60deg) translateY(-4px)}}
+  @keyframes waveRight{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(-60deg) translateY(-4px)}}
+  .guide-character.frustrated{animation:guideSad .45s ease-in-out 2}
+  .guide-character.frustrated .guide-brow.left{transform:rotate(-18deg);top:24px}
+  .guide-character.frustrated .guide-brow.right{transform:rotate(18deg);top:24px}
+  .guide-character.frustrated .guide-mouth{top:58px;border-bottom:0;border-top:4px solid #172554;border-radius:20px 20px 0 0}
+  .guide-character.frustrated .guide-orb{background:#fb7185;border-color:#ffe4e6;box-shadow:0 0 16px #fb718577}
+  @keyframes guideSad{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-5px) rotate(-3deg)}75%{transform:translateX(5px) rotate(3deg)}}
+  @media(max-width:800px){
+    .guide-zone{grid-template-columns:110px 1fr}
+    .guide-character{transform:scale(.82);transform-origin:center}
+  }
+  @media(prefers-reduced-motion: reduce){
+    .guide-character,.guide-shadow,.guide-orb{animation:none!important}
+  }
+
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">MISSÃO <span>COMBINATÓRIA</span></div>
+    <div class="teacher">8º ano • Aula Flex<br>Princípio Fundamental da Contagem</div>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="hero">
+      <span class="badge">3 histórias • 15 desafios • progresso automático</span>
+      <h1>Quantas possibilidades existem?</h1>
+      <p>Você vai entrar em três aventuras diferentes e resolver problemas de contagem. Não precisa decorar fórmulas mágicas: observe as escolhas, organize as possibilidades e descubra quando multiplicar.</p>
+      <div class="chooser">
+        <div class="mission-card" onclick="startMission(0)">
+          <div class="emoji">🔐</div>
+          <h3>O Cofre Secreto</h3>
+          <p>Senhas, códigos e escolhas com e sem repetição. Cada resposta abre uma nova trava.</p>
+          <button>Entrar na missão</button>
+        </div>
+        <div class="mission-card" onclick="startMission(1)">
+          <div class="emoji">🏙️</div>
+          <h3>A Cidade das Possibilidades</h3>
+          <p>Rotas, roupas, refeições e caminhos. A cidade muda conforme suas escolhas.</p>
+          <button>Entrar na missão</button>
+        </div>
+        <div class="mission-card" onclick="startMission(2)">
+          <div class="emoji">🚀</div>
+          <h3>Campeonato Intergaláctico</h3>
+          <p>Monte equipes, uniformes, trajetórias e códigos para vencer o torneio.</p>
+          <button>Entrar na missão</button>
+        </div>
+      </div>
+      <div class="random">
+        <button class="btn gold" onclick="randomMission()">🎲 Sortear minha missão</button>
+        <button class="btn secondary" onclick="showTeacherMode()">👨‍🏫 Modo professor</button>
+      </div>
+      <div id="teacherTip" class="note hidden">Modo professor: você pode mandar grupos diferentes para missões diferentes ou pedir as três. Cada missão gera um código de conclusão ao final.</div>
+    </div>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="game-head">
+      <div>
+        <span id="missionBadge" class="badge"></span>
+        <h2 id="missionTitle" style="margin:8px 0 0"></h2>
+      </div>
+      <button class="btn secondary" onclick="goHome()">← Missões</button>
+    </div>
+    <div class="progressbox">
+      <div class="progressbar"><div id="progressFill" class="progressfill"></div></div>
+      <div class="stats">
+        <span id="stepStat"></span>
+        <span id="scoreStat"></span>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="story">
+
+        <div class="guide-zone" aria-live="polite">
+          <div class="guide-stage">
+            <div id="guideCharacter" class="guide-character" aria-label="Lumi, guia virtual">
+              <div class="guide-shadow"></div>
+              <div class="guide-body">
+                <div class="guide-arm left"></div>
+                <div class="guide-arm right"></div>
+                <div class="guide-chest">∑</div>
+              </div>
+              <div class="guide-head">
+                <div class="guide-ear left"></div>
+                <div class="guide-ear right"></div>
+                <div class="guide-hair"></div>
+                <div class="guide-brow left"></div>
+                <div class="guide-brow right"></div>
+                <div class="guide-eye left"></div>
+                <div class="guide-eye right"></div>
+                <div class="guide-mouth"></div>
+              </div>
+              <div class="guide-orb"></div>
+            </div>
+          </div>
+          <div class="guide-copy">
+            <h4><span class="guide-name">Lumi</span>, seu guia da missão</h4>
+            <p id="guideSpeech">Estou com você. Vamos contar as possibilidades sem chutar.</p>
+            <div id="guideMood" class="guide-mood">Modo: curioso e atento ✨</div>
+          </div>
+        </div>
+        <div id="sceneEmoji" class="scene-emoji"></div>
+        <h3 id="storyTitle"></h3>
+        <p id="storyText"></p>
+        <div id="speech" class="speech"></div>
+      </div>
+
+      <div class="challenge">
+        <h2 id="qTitle"></h2>
+        <p id="qText"></p>
+        <div id="formula" class="formula hidden"></div>
+        <div id="answers"></div>
+        <div id="feedback" class="feedback">Escolha ou digite uma resposta.</div>
+        <div class="navrow">
+          <button class="btn secondary" onclick="restartStep()">↻ Tentar novamente</button>
+          <button id="nextBtn" class="btn hidden" onclick="nextStep()">Próximo desafio →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="finish" class="screen">
+    <div class="finish">
+      <div class="trophy">🏆</div>
+      <span class="badge">MISSÃO CONCLUÍDA</span>
+      <h1 id="finishTitle"></h1>
+      <p id="finishText" style="color:var(--muted);font-size:18px"></p>
+      <div id="finishCode" class="code"></div>
+      <p class="note">Mostre este código ao professor ou anote-o no caderno.</p>
+      <div class="random" style="justify-content:center">
+        <button class="btn gold" onclick="goHome()">Escolher outra missão</button>
+        <button class="btn secondary" onclick="repeatMission()">Refazer esta missão</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">Material didático interativo • Matemática • 8º ano</div>
+</div>
+
+<script>
+const missions = [
+  {
+    title:"O Cofre Secreto", badge:"MISSÃO 1", emoji:"🔐", code:"COFRE-8A",
+    intro:["A sala trancada","Você encontrou um cofre de cinco travas. Cada trava abre quando você calcula corretamente o número de possibilidades.","Agente Zero: “Não chute. Pense em quantas escolhas existem em cada etapa.”"],
+    qs:[
+      {t:"Trava 1 • Senha simples",s:["🔢","Primeira trava"],q:"Uma senha tem 2 algarismos. Em cada posição podem aparecer 1, 2 ou 3, e a repetição é permitida. Quantas senhas diferentes existem?",type:"mc",ops:["6","9","12","3"],a:"9",ex:"São 3 escolhas para a 1ª posição e 3 para a 2ª: 3 × 3 = 9."},
+      {t:"Trava 2 • Sem repetir",s:["🧩","Segunda trava"],q:"Agora a senha tem 2 algarismos diferentes escolhidos entre 1, 2, 3 e 4. Quantas senhas podem ser formadas?",type:"mc",ops:["8","12","16","6"],a:"12",ex:"Na primeira posição há 4 escolhas. Depois restam 3: 4 × 3 = 12."},
+      {t:"Trava 3 • Letra e número",s:["🔤","Terceira trava"],q:"Um código é formado por 1 letra entre A, B e C seguida de 1 algarismo entre 1, 2, 3 e 4. Quantos códigos existem?",type:"input",a:"12",ex:"3 escolhas de letra × 4 escolhas de número = 12."},
+      {t:"Trava 4 • Código proibido",s:["🚫","Quarta trava"],q:"Uma senha de 3 algarismos usa apenas 0, 1, 2 e 3, com repetição. O primeiro algarismo não pode ser 0. Quantas senhas existem?",type:"mc",ops:["64","48","36","12"],a:"48",ex:"1ª posição: 3 escolhas (1,2,3). As outras duas: 4 escolhas cada. 3 × 4 × 4 = 48."},
+      {t:"Trava 5 • Chave final",s:["🗝️","Trava final"],q:"A chave final possui 1 símbolo entre ★, ● e ▲, depois 2 algarismos diferentes escolhidos entre 1, 2, 3, 4 e 5. Quantas chaves distintas existem?",type:"input",a:"60",ex:"3 símbolos × 5 escolhas para o 1º algarismo × 4 para o 2º = 60."}
+    ]
+  },
+  {
+    title:"A Cidade das Possibilidades", badge:"MISSÃO 2", emoji:"🏙️", code:"CIDADE-8A",
+    intro:["O mapa vivo","A cidade reorganiza ruas, lojas e rotas a cada escolha. Para chegar ao centro, você precisa contar caminhos sem se perder.","Guia: “Quando uma escolha é seguida de outra, conte as opções de cada etapa.”"],
+    qs:[
+      {t:"Parada 1 • Guarda-roupa",s:["👕","Loja de roupas"],q:"Uma pessoa pode escolher 3 camisetas e 2 calças. Quantos conjuntos diferentes pode montar escolhendo 1 camiseta e 1 calça?",type:"mc",ops:["5","6","8","9"],a:"6",ex:"3 escolhas de camiseta × 2 de calça = 6 conjuntos."},
+      {t:"Parada 2 • Lanchonete",s:["🍔","Praça de alimentação"],q:"Há 2 tipos de sanduíche, 3 bebidas e 2 sobremesas. Quantos pedidos completos são possíveis escolhendo um de cada?",type:"input",a:"12",ex:"2 × 3 × 2 = 12 pedidos."},
+      {t:"Parada 3 • Rotas",s:["🛣️","Mapa da cidade"],q:"Da escola ao parque existem 4 caminhos. Do parque ao museu existem 3 caminhos. Quantas rotas escola → parque → museu são possíveis?",type:"mc",ops:["7","12","16","24"],a:"12",ex:"Para cada um dos 4 caminhos até o parque, há 3 possibilidades até o museu: 4 × 3 = 12."},
+      {t:"Parada 4 • Placa da bicicleta",s:["🚲","Estação de bicicletas"],q:"Uma identificação tem 1 letra entre X, Y e Z e 2 algarismos, cada um entre 0, 1 e 2. A repetição é permitida. Quantas identificações existem?",type:"mc",ops:["9","18","27","36"],a:"27",ex:"3 letras × 3 opções × 3 opções = 27."},
+      {t:"Parada 5 • Caminho especial",s:["🌉","Ponte central"],q:"Para chegar ao centro, você escolhe 1 de 2 pontes, depois 1 de 4 ruas e por fim 1 de 3 entradas. Quantos trajetos completos são possíveis?",type:"input",a:"24",ex:"2 × 4 × 3 = 24 trajetos."}
+    ]
+  },
+  {
+    title:"Campeonato Intergaláctico", badge:"MISSÃO 3", emoji:"🚀", code:"GALAXIA-8A",
+    intro:["Arena orbital","Seu time precisa entrar no campeonato, mas cada etapa exige uma escolha estratégica. O painel só aceita respostas corretas.","Comandante Lyra: “Conte as escolhas independentes e observe quando uma opção deixa de estar disponível.”"],
+    qs:[
+      {t:"Fase 1 • Uniforme",s:["🧑‍🚀","Vestiário orbital"],q:"O time possui 4 camisetas e 3 capacetes. Quantos uniformes diferentes podem ser montados com 1 camiseta e 1 capacete?",type:"mc",ops:["7","12","16","24"],a:"12",ex:"4 × 3 = 12 uniformes."},
+      {t:"Fase 2 • Piloto e nave",s:["🛸","Hangar"],q:"Há 5 pilotos e 2 naves disponíveis. Quantas duplas piloto-nave podem ser formadas?",type:"input",a:"10",ex:"5 escolhas de piloto × 2 de nave = 10."},
+      {t:"Fase 3 • Pódio",s:["🥇","Arena"],q:"Entre 5 competidores, quantas formas existem de escolher campeão e vice-campeão, sem repetir a pessoa?",type:"mc",ops:["10","20","25","5"],a:"20",ex:"5 opções para campeão e 4 restantes para vice: 5 × 4 = 20."},
+      {t:"Fase 4 • Código estelar",s:["✨","Painel de navegação"],q:"Um código tem 3 posições preenchidas com A, B ou C. A repetição é permitida. Quantos códigos existem?",type:"mc",ops:["6","9","18","27"],a:"27",ex:"3 × 3 × 3 = 27."},
+      {t:"Fase 5 • Formação final",s:["🏆","Final do campeonato"],q:"A equipe final escolhe 1 capitão entre 4 jogadores, 1 nave entre 3 e 1 rota entre 2. Quantas formações completas são possíveis?",type:"input",a:"24",ex:"4 × 3 × 2 = 24 formações."}
+    ]
+  }
+];
+
+let m=0, step=0, score=0, locked=false, lastMission=0;
+
+function $(id){return document.getElementById(id)}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active")}
+function startMission(i){m=i;lastMission=i;step=0;score=0;locked=false;show("game");render()}
+function randomMission(){startMission(Math.floor(Math.random()*3))}
+function goHome(){show("home")}
+function showTeacherMode(){$("teacherTip").classList.toggle("hidden")}
+function repeatMission(){startMission(lastMission)}
+
+
+function setGuideMood(mood, message){
+  const g=$("guideCharacter"), s=$("guideSpeech"), label=$("guideMood");
+  if(!g || !s || !label) return;
+  g.classList.remove("happy","frustrated");
+  void g.offsetWidth;
+  if(mood==="happy"){
+    g.classList.add("happy");
+    s.textContent=message || "Mandou muito bem! Você encontrou o raciocínio certo.";
+    label.textContent="Modo: feliz e empolgado 🎉";
+  }else if(mood==="frustrated"){
+    g.classList.add("frustrated");
+    s.textContent=message || "Quase! Eu também fiquei frustrado, mas vamos olhar as escolhas com calma.";
+    label.textContent="Modo: frustrado, mas ainda na missão 😤";
+  }else{
+    s.textContent=message || "Estou com você. Vamos contar as possibilidades sem chutar.";
+    label.textContent="Modo: curioso e atento ✨";
+  }
+}
+
+function render(){
+  const M=missions[m], Q=M.qs[step];
+  $("missionBadge").textContent=M.badge;
+  $("missionTitle").textContent=M.title;
+  $("stepStat").textContent=`Desafio ${step+1} de ${M.qs.length}`;
+  $("scoreStat").textContent=`Acertos: ${score}`;
+  $("progressFill").style.width=`${(step/M.qs.length)*100}%`;
+  $("sceneEmoji").textContent=Q.s[0];
+  $("storyTitle").textContent=step===0?M.intro[0]:Q.s[1];
+  $("storyText").textContent=step===0?M.intro[1]:`Você avançou para ${Q.s[1].toLowerCase()}. Observe as escolhas antes de calcular.`;
+  $("speech").textContent=step===0?M.intro[2]:"Dica: desenhe possibilidades ou pense em quantas opções existem em cada etapa.";
+  $("qTitle").textContent=Q.t;
+  $("qText").textContent=Q.q;
+  $("feedback").className="feedback";
+  $("feedback").textContent="Escolha ou digite uma resposta.";
+  $("nextBtn").classList.add("hidden");
+  $("formula").classList.add("hidden");
+  $("formula").textContent="";
+  locked=false;
+  setGuideMood("idle", step===0 ? "Eu sou o Lumi. Vou reagir às suas respostas e te ajudar a pensar em cada etapa." : "Estou de olho nas suas escolhas. Pense antes de responder.");
+
+  const box=$("answers"); box.innerHTML="";
+  if(Q.type==="mc"){
+    const opts=document.createElement("div");opts.className="options";
+    Q.ops.forEach(op=>{
+      const b=document.createElement("button");b.className="option";b.textContent=op;
+      b.onclick=()=>check(op,b);opts.appendChild(b)
+    });
+    box.appendChild(opts);
+  }else{
+    const row=document.createElement("div");row.className="inputrow";
+    const inp=document.createElement("input");inp.type="number";inp.placeholder="Digite sua resposta";
+    inp.onkeydown=e=>{if(e.key==="Enter") check(inp.value,inp)};
+    const b=document.createElement("button");b.className="btn";b.textContent="Conferir";
+    b.onclick=()=>check(inp.value,inp);
+    row.append(inp,b);box.appendChild(row);setTimeout(()=>inp.focus(),100);
+  }
+}
+function check(value,el){
+  if(locked)return;
+  const Q=missions[m].qs[step];
+  if(String(value).trim()===String(Q.a)){
+    locked=true;score++;
+    if(el.classList)el.classList.add("correct");
+    $("feedback").className="feedback ok";
+    $("feedback").innerHTML=`✅ <b>Correto!</b> ${Q.ex}`;
+    $("formula").classList.remove("hidden");
+    $("formula").textContent=`Raciocínio: ${Q.ex}`;
+    $("nextBtn").classList.remove("hidden");
+    $("scoreStat").textContent=`Acertos: ${score}`;
+    setGuideMood("happy", "Aí sim! Essa combinação fez sentido. Bora para a próxima.");
+    burst(18);
+  }else{
+    if(el.classList)el.classList.add("wrong");
+    $("feedback").className="feedback bad";
+    $("feedback").innerHTML="❌ Ainda não. Releia as condições e conte quantas escolhas existem em cada etapa.";
+    setGuideMood("frustrated", "Essa me pegou também. Repara: alguma escolha diminuiu ou continua igual?");
+    setTimeout(()=>el.classList&&el.classList.remove("wrong"),700);
+  }
+}
+function restartStep(){render()}
+function nextStep(){
+  if(step<missions[m].qs.length-1){step++;render()}
+  else finishMission();
+}
+function finishMission(){
+  const M=missions[m];
+  show("finish");
+  $("finishTitle").textContent=M.title;
+  $("finishText").textContent=`Você concluiu os 5 desafios com ${score} acertos na primeira conclusão de cada etapa.`;
+  $("finishCode").textContent=`${M.code}-${score}5`;
+  $("progressFill").style.width="100%";
+  burst(60);
+}
+function burst(n){
+  for(let i=0;i<n;i++){
+    const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360} 90% 60%)`;
+    c.style.animationDelay=(Math.random()*.4)+"s";
+    c.style.transform=`rotate(${Math.random()*180}deg)`;
+    document.body.appendChild(c);setTimeout(()=>c.remove(),3200);
+  }
+}
+</script>
+</body>
+</html>
